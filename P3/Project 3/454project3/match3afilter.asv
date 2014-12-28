@@ -1,0 +1,66 @@
+%%%%%%%%%%%%% The match2afilter.m file %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%
+%Purpose:  
+%     To cancel the salt and pepper noise in the input image(match3a.bmp) with 
+%      method of opening (firstly erosion then dilation), and to try best to 
+%      retain the shape of the objects in the images.
+%
+%      Input Variables
+%          f                         input target 2D image (with noise) 
+%
+%      Returned Results
+%          fff                       output 2D image (with noise canceled) 
+%
+%       Processing Flow:
+%      1.  Firstly obtain the size of input image then initial 2 same size 
+%          image matrices to save gray level information
+%      2.  Then loop for examine pixels in the input image. We use the
+%          diamond mask in process of opening so considering the border
+%          effect, the first and last row, and the first and last colomn
+%           and considering the border effect, the first and 
+%          last row of the input image will not be examinedand. Use '&&' for 
+%          erosion judgement, then obtain the erosion image ff
+%      3.  Do process of dilation with same mask and use '||' for dilation
+%          judgement. Border effect should also be considered. Finally we
+%          obtain the image fff which has no streak noise in it.
+%     
+%
+%  Author:      Zhenning Zhao, Kyle McCormick, Michael Mikulski
+%  Date:        10/25/2012
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+function fff = match3afilter(f)
+[m, n] = size(f);
+ff = zeros(m,n);
+fff = zeros(m,n);
+
+
+for i = 2:(m-1)
+    for j = 2:(n-1)
+        if f(i,j)>0 && f(i+1, j)> 0 && f(i-1, j)>0 && f(i,j+1 )>0 && f(i,j-1)>0
+           
+            ff(i,j) = 1;
+        end
+    end
+end
+figure;
+subplot(1,2,1);
+imshow(ff);
+title('image match3a after erosion');
+
+for i = 2:(m-1)
+    for j = 2:(n-1)
+            if ff(i,j)>0 || ff(i+1, j)> 0 || ff(i-1, j)>0 || ff(i,j+1 )>0 || ff(i,j-1)>0
+           
+            fff(i,j) = 1;
+            end
+    end
+end
+subplot(1,2,2);
+imshow(fff);
+title('final result');
+
+
+
